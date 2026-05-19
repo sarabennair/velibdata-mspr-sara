@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+
+# Secrets
+.env
+.env.local
+
+# Data (trop lourd pour git)
+data/
+*.parquet
+*.csv
+!tests/fixtures/*.csv
+
+# IDE
+.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Tests & caches
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# ML
+mlruns/
+
+# Azure
+.terraform/
+*.tfstate
+*.tfstate.backup
