@@ -36,8 +36,8 @@ resource "azurerm_monitor_metric_alert" "ingestion_lag" {
   resource_group_name = var.resource_group_name
   scopes              = [var.eventhub_namespace_id]
   severity            = 0
-  frequency           = "PT2M"
-  window_size         = "PT5M"
+  frequency           = "PT5M"
+  window_size         = "PT15M"
   description         = "CRITIQUE: No messages received in Event Hubs for 5 minutes — ingestion pipeline may be down"
 
   criteria {

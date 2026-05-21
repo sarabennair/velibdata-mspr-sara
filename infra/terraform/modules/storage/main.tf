@@ -33,11 +33,11 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "gold" {
   storage_account_id = azurerm_storage_account.velibdata.id
 }
 
-# ── RBAC: pipeline SP gets contributor on all containers (CdC §8.6)
-resource "azurerm_role_assignment" "pipeline_sp_storage" {
+# ── RBAC: current user gets contributor on ADLS (CdC §8.6)
+resource "azurerm_role_assignment" "current_user_storage" {
   scope                = azurerm_storage_account.velibdata.id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = var.pipeline_sp_object_id
+  principal_id         = var.current_user_object_id
 }
 
 # ── Store connection string in Key Vault (never hardcode it) ──

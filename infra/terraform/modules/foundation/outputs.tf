@@ -6,12 +6,10 @@ output "tenant_id" {
   value = data.azurerm_client_config.current.tenant_id
 }
 
-output "pipeline_sp_object_id" {
-  value = azuread_service_principal.velibdata_pipeline.object_id
-}
-
-output "pipeline_sp_client_id" {
-  value = azuread_application.velibdata_pipeline.client_id
+# Object ID of the currently logged-in user (az login session)
+# Used for RBAC assignments on storage, Event Hubs, etc.
+output "current_user_object_id" {
+  value = data.azurerm_client_config.current.object_id
 }
 
 output "key_vault_id" {

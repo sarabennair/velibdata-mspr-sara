@@ -12,7 +12,7 @@ module "storage" {
   resource_group_name   = var.resource_group_name
   location              = var.location
   storage_account_name  = var.storage_account_name
-  pipeline_sp_object_id = module.foundation.pipeline_sp_object_id
+  current_user_object_id = module.foundation.current_user_object_id
   key_vault_id          = module.foundation.key_vault_id
 
   depends_on = [module.foundation]

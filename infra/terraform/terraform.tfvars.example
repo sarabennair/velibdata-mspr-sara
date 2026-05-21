@@ -5,7 +5,7 @@
 # ============================================================
 
 resource_group_name     = "rg-velibdata"
-location                = "West Europe"
+location                = "francecentral"
 storage_account_name    = "velibdatastorage"   # must be globally unique
 key_vault_name          = "kv-velibdata"        # must be globally unique
 eventhub_namespace_name = "evhns-velibdata"
