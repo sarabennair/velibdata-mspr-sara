@@ -6,10 +6,10 @@ Pour le dev, ecrit en local dans data/bronze/. Sera remplace par ADLS Gen2.
 
 import asyncio
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
-from src.ingestion.velib_client import fetch_station_status, fetch_station_info, fetch_weather
+from src.ingestion.velib_client import fetch_station_info, fetch_station_status, fetch_weather
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -19,8 +19,8 @@ LOCAL_BRONZE = Path("data/bronze")
 
 def _write_bronze(data: dict, source: str) -> Path:
     """Ecrit les donnees brutes en JSON dans le bronze layer local."""
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    date_partition = datetime.now(timezone.utc).strftime("%Y/%m/%d")
+    timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+    date_partition = datetime.now(UTC).strftime("%Y/%m/%d")
 
     output_dir = LOCAL_BRONZE / source / date_partition
     output_dir.mkdir(parents=True, exist_ok=True)
