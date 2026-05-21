@@ -7,31 +7,31 @@ variable "resource_group_name" {
 variable "location" {
   description = "Azure region for all resources"
   type        = string
-  default     = "francecentral"
+  default     = "germanywestcentral"
 }
 
 variable "storage_account_name" {
   description = "Name of the ADLS Gen2 storage account (must be globally unique, lowercase, 3-24 chars)"
   type        = string
-  default     = "velibdatastorage"
+  default     = "velibdata1c53"
 }
 
 variable "key_vault_name" {
   description = "Name of the Azure Key Vault (must be globally unique, 3-24 chars)"
   type        = string
-  default     = "kv-velibdata"
+  default     = "kv-velib-1c53"
 }
 
 variable "eventhub_namespace_name" {
   description = "Name of the Event Hubs namespace"
   type        = string
-  default     = "evhns-velibdata"
+  default     = "evhns-velib-1c53"
 }
 
 variable "adf_name" {
   description = "Name of the Azure Data Factory instance"
   type        = string
-  default     = "adf-velibdata"
+  default     = "adf-velib-1c53"
 }
 
 variable "alert_email" {
@@ -48,5 +48,5 @@ variable "budget_amount" {
 variable "budget_start_date" {
   description = "Start date for budget tracking (format: YYYY-MM-01T00:00:00Z)"
   type        = string
-  default     = "2025-09-01T00:00:00Z"
+  default     = "2026-05-01T00:00:00Z"
 }

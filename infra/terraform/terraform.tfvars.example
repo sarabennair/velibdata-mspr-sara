@@ -5,12 +5,12 @@
 # ============================================================
 
 resource_group_name     = "rg-velibdata"
-location                = "francecentral"
-storage_account_name    = "velibdatastorage"   # must be globally unique
-key_vault_name          = "kv-velibdata"        # must be globally unique
-eventhub_namespace_name = "evhns-velibdata"
-adf_name                = "adf-velibdata"
+location                = "germanywestcentral"   # allowed: polandcentral, switzerlandnorth, swedencentral, norwayeast, germanywestcentral
+storage_account_name    = "velibdata1c53"         # globally unique — lowercase, no hyphens
+key_vault_name          = "kv-velib-1c53"         # globally unique
+eventhub_namespace_name = "evhns-velib-1c53"      # globally unique
+adf_name                = "adf-velib-1c53"        # globally unique
 
 alert_email       = "your-email@epsi.fr"
 budget_amount     = 100
-budget_start_date = "2025-09-01T00:00:00Z"
+budget_start_date = "2026-05-01T00:00:00Z"

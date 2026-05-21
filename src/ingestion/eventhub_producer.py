@@ -15,7 +15,7 @@ from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-_KEY_VAULT_URI = os.getenv("AZURE_KEY_VAULT_URI", "https://kv-velibdata.vault.azure.net/")
+_KEY_VAULT_URI = os.getenv("AZURE_KEY_VAULT_URI", "https://kv-velib-1c53.vault.azure.net/")
 
 # Hub names matching Terraform eventhubs module
 HUB_AVAILABILITY = "velib-availability"
