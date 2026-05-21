@@ -35,3 +35,4 @@ mlruns/
 .terraform/
 *.tfstate
 *.tfstate.backup
+logs/
