@@ -11,6 +11,7 @@ dependencies = [
     "azure-storage-file-datalake>=12.14.0",
     "azure-identity>=1.15.0",
     "azure-keyvault-secrets>=4.7.0",
+    "azure-eventhub>=5.11.0",
 
     # === Ingestion & HTTP ===
     "requests>=2.31.0",

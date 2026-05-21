@@ -17,7 +17,6 @@ data/
 !tests/fixtures/*.csv
 
 # IDE
-.vscode/settings.json
 .idea/
 .DS_Store
 Thumbs.db
@@ -31,7 +30,11 @@ htmlcov/
 # ML
 mlruns/
 
-# Azure
+# Azure / Terraform
 .terraform/
 *.tfstate
 *.tfstate.backup
+terraform.tfvars        # contains real secrets — use terraform.tfvars.example instead
+tfplan
+plan_output.txt
+.terraform.lock.hcl
