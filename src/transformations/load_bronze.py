@@ -8,7 +8,7 @@ Pour de l incremental, voir Azure Data Factory.
 """
 
 import json
-from datetime import UTC, datetime
+from datetime import datetime
 
 import pyodbc
 from azure.storage.filedatalake import DataLakeServiceClient
@@ -60,7 +60,6 @@ BRONZE_SCHEMAS = {
 
 def _get_sql_connection() -> pyodbc.Connection:
     """Connexion a Azure SQL Database via les credentials du .env."""
-    from src.utils.config import APISettings
     import os
 
     server = os.getenv("SQL_SERVER")
@@ -197,7 +196,10 @@ def load_weather(conn: pyodbc.Connection, data: dict) -> int:
     winds = hourly.get("windspeed_10m", [])
     codes = hourly.get("weathercode", [])
 
-    rows = [(datetime.fromisoformat(t), tmp, p, w, c) for t, tmp, p, w, c in zip(times, temps, precs, winds, codes, strict=False)]
+    rows = [
+        (datetime.fromisoformat(t), tmp, p, w, c)
+        for t, tmp, p, w, c in zip(times, temps, precs, winds, codes, strict=False)
+    ]
 
     cursor.fast_executemany = True
     cursor.executemany("""
