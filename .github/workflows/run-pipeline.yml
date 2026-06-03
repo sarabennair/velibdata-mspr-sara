@@ -1,0 +1,88 @@
+name: Run VelibData Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_mode:
+        description: "Pipeline mode to run"
+        required: true
+        default: dbt_only
+        type: choice
+        options:
+          - dbt_only
+          - local_avro_pipeline
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install UnixODBC
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unixodbc unixodbc-dev odbcinst curl gnupg apt-transport-https
+
+      - name: Install Microsoft ODBC Driver 18 for SQL Server
+        run: |
+          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
+          source /etc/os-release
+          curl -fsSL "https://packages.microsoft.com/config/ubuntu/${VERSION_ID}/prod.list" | sudo tee /etc/apt/sources.list.d/mssql-release.list
+          sudo sed -i 's#deb #deb [signed-by=/usr/share/keyrings/microsoft-prod.gpg] #' /etc/apt/sources.list.d/mssql-release.list
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+
+      - name: Install Python dependencies
+        run: uv sync
+
+      - name: Create .env
+        run: |
+          cat > .env <<'EOF'
+SQL_SERVER=${{ secrets.SQL_SERVER }}
+SQL_DATABASE=${{ secrets.SQL_DATABASE }}
+SQL_USER=${{ secrets.SQL_USER }}
+SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}
+AZURE_KEY_VAULT_URI=${{ secrets.AZURE_KEY_VAULT_URI }}
+EVENTHUB_CONNECTION_STRING=${{ secrets.EVENTHUB_CONNECTION_STRING }}
+EVENTHUB_AVAILABILITY_NAME=${{ secrets.EVENTHUB_AVAILABILITY_NAME }}
+EVENTHUB_STATION_INFO_NAME=${{ secrets.EVENTHUB_STATION_INFO_NAME }}
+EVENTHUB_WEATHER_NAME=${{ secrets.EVENTHUB_WEATHER_NAME }}
+EOF
+
+      - name: Create dbt profile
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<'EOF'
+dbt_velibdata:
+  target: dev
+  outputs:
+    dev:
+      type: sqlserver
+      driver: "ODBC Driver 18 for SQL Server"
+      server: "${{ secrets.SQL_SERVER }}"
+      database: "${{ secrets.SQL_DATABASE }}"
+      schema: dbo
+      user: "${{ secrets.SQL_USER }}"
+      password: "${{ secrets.SQL_PASSWORD }}"
+      encrypt: true
+      trust_cert: false
+      threads: 4
+EOF
+
+      - name: Run dbt only
+        if: ${{ inputs.run_mode == 'dbt_only' }}
+        working-directory: dbt_velibdata
+        run: |
+          uv run dbt debug
+          uv run dbt run
+          uv run dbt test
+
+      - name: Run local Avro pipeline
+        if: ${{ inputs.run_mode == 'local_avro_pipeline' }}
+        run: |
+          uv run python -m src.orchestration.run_pipeline --avro-dir tmp --normalized-dir data/normalized --dbt-dir dbt_velibdata
