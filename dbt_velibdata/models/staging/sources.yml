@@ -3,7 +3,6 @@ version: 2
 sources:
   - name: bronze
     description: "Donnees brutes ingérées depuis les APIs Velib et Open-Meteo"
-    database: velibdata
     schema: bronze
     tables:
       - name: station_status

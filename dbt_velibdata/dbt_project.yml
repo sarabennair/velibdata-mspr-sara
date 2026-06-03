@@ -15,6 +15,7 @@ clean-targets:
 
 models:
   dbt_velibdata:
+    +as_columnstore: false
     staging:
       +materialized: view
       +schema: silver
