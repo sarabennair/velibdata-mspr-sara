@@ -1,0 +1,16 @@
+# ============================================================
+# VélibData Terraform Variables — EXAMPLE FILE
+# Copy this file:  cp terraform.tfvars.example terraform.tfvars
+# Fill in your values. NEVER commit terraform.tfvars to git.
+# ============================================================
+
+resource_group_name     = "rg-velibdata"
+location                = "germanywestcentral"   # allowed: polandcentral, switzerlandnorth, swedencentral, norwayeast, germanywestcentral
+storage_account_name    = "velibdata1c53"         # globally unique — lowercase, no hyphens
+key_vault_name          = "kv-velib-1c53"         # globally unique
+eventhub_namespace_name = "evhns-velib-1c53"      # globally unique
+adf_name                = "adf-velib-1c53"        # globally unique
+
+alert_email       = "your-email@epsi.fr"
+budget_amount     = 100
+budget_start_date = "2026-05-01T00:00:00Z"

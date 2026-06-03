@@ -1,0 +1,60 @@
+module "foundation" {
+  source = "./modules/foundation"
+
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  key_vault_name      = var.key_vault_name
+}
+
+module "storage" {
+  source = "./modules/storage"
+
+  resource_group_name   = var.resource_group_name
+  location              = var.location
+  storage_account_name  = var.storage_account_name
+  current_user_object_id = module.foundation.current_user_object_id
+  key_vault_id          = module.foundation.key_vault_id
+
+  depends_on = [module.foundation]
+}
+
+module "eventhubs" {
+  source = "./modules/eventhubs"
+
+  resource_group_name     = var.resource_group_name
+  location                = var.location
+  eventhub_namespace_name = var.eventhub_namespace_name
+  key_vault_id            = module.foundation.key_vault_id
+
+  depends_on = [module.foundation]
+}
+
+module "adf" {
+  source = "./modules/adf"
+
+  resource_group_name   = var.resource_group_name
+  location              = var.location
+  adf_name              = var.adf_name
+  storage_account_id    = module.storage.storage_account_id
+  storage_account_name  = var.storage_account_name
+  eventhub_namespace_id = module.eventhubs.eventhub_namespace_id
+  key_vault_id          = module.foundation.key_vault_id
+  key_vault_name        = var.key_vault_name
+  tenant_id             = module.foundation.tenant_id
+
+  depends_on = [module.storage, module.eventhubs]
+}
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  resource_group_name   = var.resource_group_name
+  resource_group_id     = module.foundation.resource_group_id
+  location              = var.location
+  eventhub_namespace_id = module.eventhubs.eventhub_namespace_id
+  alert_email           = var.alert_email
+  budget_amount         = var.budget_amount
+  budget_start_date     = var.budget_start_date
+
+  depends_on = [module.foundation]
+}
