@@ -36,3 +36,7 @@ mlruns/
 *.tfstate
 *.tfstate.backup
 logs/
+
+# Terraform local variables
+*.tfvars
+*.tfvars.json
