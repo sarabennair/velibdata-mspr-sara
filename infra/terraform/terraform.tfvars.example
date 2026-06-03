@@ -11,6 +11,15 @@ key_vault_name          = "kv-velib-1c53"         # globally unique
 eventhub_namespace_name = "evhns-velib-1c53"      # globally unique
 adf_name                = "adf-velib-1c53"        # globally unique
 
+# --- Azure SQL Database (economical SKU for Azure for Students demos) ---
+sql_server_name                   = "sql-velib-1c53"    # globally unique, lowercase, hyphens allowed
+sql_database_name                 = "sqldb-velibdata"
+sql_admin_login                   = "velibadmin"
+sql_sku_name                      = "Basic"
+sql_max_size_gb                   = 2
+sql_public_network_access_enabled = true
+sql_allow_azure_services          = true
+
 alert_email       = "your-email@epsi.fr"
 budget_amount     = 100
 budget_start_date = "2026-05-01T00:00:00Z"

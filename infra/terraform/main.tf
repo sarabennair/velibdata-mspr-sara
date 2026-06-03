@@ -29,6 +29,23 @@ module "eventhubs" {
   depends_on = [module.foundation]
 }
 
+module "sql" {
+  source = "./modules/sql"
+
+  resource_group_name               = var.resource_group_name
+  location                          = var.location
+  key_vault_id                      = module.foundation.key_vault_id
+  sql_server_name                   = var.sql_server_name
+  sql_database_name                 = var.sql_database_name
+  sql_admin_login                   = var.sql_admin_login
+  sql_sku_name                      = var.sql_sku_name
+  sql_max_size_gb                   = var.sql_max_size_gb
+  sql_public_network_access_enabled = var.sql_public_network_access_enabled
+  sql_allow_azure_services          = var.sql_allow_azure_services
+
+  depends_on = [module.foundation]
+}
+
 module "adf" {
   source = "./modules/adf"
 

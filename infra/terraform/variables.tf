@@ -34,6 +34,48 @@ variable "adf_name" {
   default     = "adf-velib-1c53"
 }
 
+variable "sql_server_name" {
+  description = "Globally unique Azure SQL Server name (lowercase, 3-63 chars)"
+  type        = string
+  default     = "sql-velib-1c53"
+}
+
+variable "sql_database_name" {
+  description = "Azure SQL Database name used for Bronze, Silver, and Gold schemas"
+  type        = string
+  default     = "sqldb-velibdata"
+}
+
+variable "sql_admin_login" {
+  description = "Azure SQL administrator login"
+  type        = string
+  default     = "velibadmin"
+}
+
+variable "sql_sku_name" {
+  description = "Economical Azure SQL Database SKU compatible with Azure for Students demos"
+  type        = string
+  default     = "Basic"
+}
+
+variable "sql_max_size_gb" {
+  description = "Maximum Azure SQL Database size in GB"
+  type        = number
+  default     = 2
+}
+
+variable "sql_public_network_access_enabled" {
+  description = "Whether public network access is enabled for the Azure SQL Server"
+  type        = bool
+  default     = true
+}
+
+variable "sql_allow_azure_services" {
+  description = "Allow Azure services and resources to access this Azure SQL Server"
+  type        = bool
+  default     = true
+}
+
 variable "alert_email" {
   description = "Email address for Azure Monitor and budget alerts"
   type        = string

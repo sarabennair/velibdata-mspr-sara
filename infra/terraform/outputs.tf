@@ -48,6 +48,32 @@ output "eventhub_namespace_name" {
   value       = var.eventhub_namespace_name
 }
 
+output "sql_server_name" {
+  description = "Azure SQL Server name"
+  value       = module.sql.sql_server_name
+}
+
+output "sql_server_fqdn" {
+  description = "Azure SQL Server fully qualified domain name"
+  value       = module.sql.sql_server_fqdn
+}
+
+output "sql_database_name" {
+  description = "Azure SQL Database name"
+  value       = module.sql.sql_database_name
+}
+
+output "sql_admin_login" {
+  description = "Azure SQL administrator login"
+  value       = module.sql.sql_admin_login
+}
+
+output "sql_connection_string" {
+  description = "Azure SQL connection string stored in Key Vault as sql-connection-string"
+  value       = module.sql.sql_connection_string
+  sensitive   = true
+}
+
 output "adf_name" {
   description = "Azure Data Factory name"
   value       = var.adf_name
