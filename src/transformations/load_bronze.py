@@ -12,9 +12,12 @@ from datetime import datetime
 
 import pyodbc
 from azure.storage.filedatalake import DataLakeServiceClient
+from dotenv import load_dotenv
 
 from src.utils.config import azure_settings
 from src.utils.logger import get_logger
+
+load_dotenv(".env")
 
 logger = get_logger(__name__)
 
@@ -124,12 +127,48 @@ def get_latest_file(service: DataLakeServiceClient, source: str) -> dict:
     return json.loads(content)
 
 
+def extract_payload(data: dict) -> dict:
+    """Retourne le payload metier depuis un JSON normalise ou brut.
+
+    Les fichiers normalises issus d Event Hubs Capture enveloppent les donnees
+    dans un champ `payload`. Les anciens fichiers Bronze contiennent deja le
+    payload a la racine. Cette fonction garde donc la compatibilite avec les
+    deux formats.
+    """
+    source = data.get("source")
+    batch_id = data.get("batch_id")
+
+    if "payload" in data:
+        logger.info("normalized_payload_detected", source=source, batch_id=batch_id)
+        payload = data.get("payload")
+        if not isinstance(payload, dict):
+            raise ValueError("Le champ payload doit etre un objet JSON")
+        return payload
+
+    logger.info("raw_payload_detected", source=source, batch_id=batch_id)
+    return data
+
+
+def validate_source(data: dict, expected_source: str, loader_name: str) -> None:
+    """Valide la source des JSON normalises sans bloquer les anciens JSON bruts."""
+    source = data.get("source")
+    if source is not None and source != expected_source:
+        raise ValueError(
+            f"{loader_name} attend source='{expected_source}', mais a recu source='{source}'"
+        )
+
+
 def load_station_status(conn: pyodbc.Connection, data: dict) -> int:
     """Charge station_status dans bronze.station_status."""
+    validate_source(data, "velib_station_status", "load_station_status")
+    source = data.get("source")
+    batch_id = data.get("batch_id")
+    payload = extract_payload(data)
+
     cursor = conn.cursor()
     cursor.execute("TRUNCATE TABLE bronze.station_status")
 
-    stations = data.get("stations", [])
+    stations = payload.get("stations", [])
     rows = []
     for s in stations:
         rows.append((
@@ -152,16 +191,21 @@ def load_station_status(conn: pyodbc.Connection, data: dict) -> int:
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, rows)
     conn.commit()
-    logger.info("station_status_loaded", count=len(rows))
+    logger.info("station_status_loaded", count=len(rows), source=source, batch_id=batch_id)
     return len(rows)
 
 
 def load_station_info(conn: pyodbc.Connection, data: dict) -> int:
     """Charge station_info dans bronze.station_info."""
+    validate_source(data, "velib_station_info", "load_station_info")
+    source = data.get("source")
+    batch_id = data.get("batch_id")
+    payload = extract_payload(data)
+
     cursor = conn.cursor()
     cursor.execute("TRUNCATE TABLE bronze.station_info")
 
-    stations = data.get("stations", [])
+    stations = payload.get("stations", [])
     rows = []
     for s in stations:
         rows.append((
@@ -180,16 +224,21 @@ def load_station_info(conn: pyodbc.Connection, data: dict) -> int:
         VALUES (?, ?, ?, ?, ?, ?)
     """, rows)
     conn.commit()
-    logger.info("station_info_loaded", count=len(rows))
+    logger.info("station_info_loaded", count=len(rows), source=source, batch_id=batch_id)
     return len(rows)
 
 
 def load_weather(conn: pyodbc.Connection, data: dict) -> int:
     """Charge weather (hourly) dans bronze.weather."""
+    validate_source(data, "open_meteo", "load_weather")
+    source = data.get("source")
+    batch_id = data.get("batch_id")
+    payload = extract_payload(data)
+
     cursor = conn.cursor()
     cursor.execute("TRUNCATE TABLE bronze.weather")
 
-    hourly = data.get("data", {}).get("hourly", {})
+    hourly = payload.get("data", {}).get("hourly", {})
     times = hourly.get("time", [])
     temps = hourly.get("temperature_2m", [])
     precs = hourly.get("precipitation", [])
@@ -207,7 +256,7 @@ def load_weather(conn: pyodbc.Connection, data: dict) -> int:
         VALUES (?, ?, ?, ?, ?)
     """, rows)
     conn.commit()
-    logger.info("weather_loaded", count=len(rows))
+    logger.info("weather_loaded", count=len(rows), source=source, batch_id=batch_id)
     return len(rows)
 
 
