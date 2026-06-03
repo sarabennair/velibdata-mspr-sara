@@ -30,6 +30,7 @@ dependencies = [
     "structlog>=24.1.0",
     "rich>=13.7.0",
     "dbt-sqlserver>=1.9.1",
+    "fastavro>=1.12.2",
 ]
 
 [project.optional-dependencies]
