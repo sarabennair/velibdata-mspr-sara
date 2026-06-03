@@ -28,6 +28,24 @@ variable "eventhub_namespace_name" {
   default     = "evhns-velib-1c53"
 }
 
+variable "eventhub_capture_container_name" {
+  description = "ADLS Gen2 filesystem/container used by Event Hubs Capture"
+  type        = string
+  default     = "bronze"
+}
+
+variable "eventhub_capture_interval_in_seconds" {
+  description = "Event Hubs Capture interval in seconds. 900 seconds keeps archive frequency low for Azure for Students."
+  type        = number
+  default     = 900
+}
+
+variable "eventhub_capture_size_limit_in_bytes" {
+  description = "Event Hubs Capture size limit in bytes before an archive is emitted"
+  type        = number
+  default     = 10485760
+}
+
 variable "adf_name" {
   description = "Name of the Azure Data Factory instance"
   type        = string

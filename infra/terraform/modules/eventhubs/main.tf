@@ -3,7 +3,7 @@ resource "azurerm_eventhub_namespace" "velibdata" {
   name                = var.eventhub_namespace_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  sku                 = "Basic"
+  sku                 = "Standard"
   capacity            = 1
 }
 
@@ -14,6 +14,21 @@ resource "azurerm_eventhub" "availability" {
   resource_group_name = var.resource_group_name
   partition_count     = 2
   message_retention   = 1
+
+  capture_description {
+    enabled             = true
+    encoding            = "Avro"
+    interval_in_seconds = var.capture_interval_in_seconds
+    size_limit_in_bytes = var.capture_size_limit_in_bytes
+    skip_empty_archives = true
+
+    destination {
+      name                = "EventHubArchive.AzureBlockBlob"
+      archive_name_format = "eventhubs/velib-availability/{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
+      blob_container_name = var.capture_container_name
+      storage_account_id  = var.capture_storage_account_id
+    }
+  }
 }
 
 resource "azurerm_eventhub" "station_info" {
@@ -22,6 +37,21 @@ resource "azurerm_eventhub" "station_info" {
   resource_group_name = var.resource_group_name
   partition_count     = 2
   message_retention   = 1
+
+  capture_description {
+    enabled             = true
+    encoding            = "Avro"
+    interval_in_seconds = var.capture_interval_in_seconds
+    size_limit_in_bytes = var.capture_size_limit_in_bytes
+    skip_empty_archives = true
+
+    destination {
+      name                = "EventHubArchive.AzureBlockBlob"
+      archive_name_format = "eventhubs/velib-station-info/{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
+      blob_container_name = var.capture_container_name
+      storage_account_id  = var.capture_storage_account_id
+    }
+  }
 }
 
 resource "azurerm_eventhub" "weather" {
@@ -30,6 +60,21 @@ resource "azurerm_eventhub" "weather" {
   resource_group_name = var.resource_group_name
   partition_count     = 2
   message_retention   = 1
+
+  capture_description {
+    enabled             = true
+    encoding            = "Avro"
+    interval_in_seconds = var.capture_interval_in_seconds
+    size_limit_in_bytes = var.capture_size_limit_in_bytes
+    skip_empty_archives = true
+
+    destination {
+      name                = "EventHubArchive.AzureBlockBlob"
+      archive_name_format = "eventhubs/velib-weather/{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
+      blob_container_name = var.capture_container_name
+      storage_account_id  = var.capture_storage_account_id
+    }
+  }
 }
 
 # ── Authorization rule: pipeline can SEND events ─────────────

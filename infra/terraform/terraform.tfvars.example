@@ -11,6 +11,11 @@ key_vault_name          = "kv-velib-1c53"         # globally unique
 eventhub_namespace_name = "evhns-velib-1c53"      # globally unique
 adf_name                = "adf-velib-1c53"        # globally unique
 
+# --- Event Hubs Capture (Standard namespace, low-cost settings) ---
+eventhub_capture_container_name      = "bronze"
+eventhub_capture_interval_in_seconds = 900
+eventhub_capture_size_limit_in_bytes = 10485760
+
 # --- Azure SQL Database (economical SKU for Azure for Students demos) ---
 sql_server_name                   = "sql-velib-1c53"    # globally unique, lowercase, hyphens allowed
 sql_database_name                 = "sqldb-velibdata"

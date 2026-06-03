@@ -21,12 +21,16 @@ module "storage" {
 module "eventhubs" {
   source = "./modules/eventhubs"
 
-  resource_group_name     = var.resource_group_name
-  location                = var.location
-  eventhub_namespace_name = var.eventhub_namespace_name
-  key_vault_id            = module.foundation.key_vault_id
+  resource_group_name          = var.resource_group_name
+  location                     = var.location
+  eventhub_namespace_name      = var.eventhub_namespace_name
+  key_vault_id                 = module.foundation.key_vault_id
+  capture_storage_account_id   = module.storage.storage_account_id
+  capture_container_name       = var.eventhub_capture_container_name
+  capture_interval_in_seconds  = var.eventhub_capture_interval_in_seconds
+  capture_size_limit_in_bytes  = var.eventhub_capture_size_limit_in_bytes
 
-  depends_on = [module.foundation]
+  depends_on = [module.foundation, module.storage]
 }
 
 module "sql" {

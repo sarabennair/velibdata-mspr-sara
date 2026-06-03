@@ -48,6 +48,21 @@ output "eventhub_namespace_name" {
   value       = var.eventhub_namespace_name
 }
 
+output "eventhub_capture_container_name" {
+  description = "ADLS Gen2 filesystem/container used by Event Hubs Capture"
+  value       = module.eventhubs.capture_container_name
+}
+
+output "eventhub_capture_interval_in_seconds" {
+  description = "Event Hubs Capture interval in seconds"
+  value       = module.eventhubs.capture_interval_in_seconds
+}
+
+output "eventhub_capture_size_limit_in_bytes" {
+  description = "Event Hubs Capture size limit in bytes"
+  value       = module.eventhubs.capture_size_limit_in_bytes
+}
+
 output "sql_server_name" {
   description = "Azure SQL Server name"
   value       = module.sql.sql_server_name
