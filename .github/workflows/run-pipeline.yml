@@ -42,37 +42,37 @@ jobs:
 
       - name: Create .env
         run: |
-          cat > .env <<'EOF'
-SQL_SERVER=${{ sql-epsivelib0603.database.windows.net }}
-SQL_DATABASE=${{ sqldb-velibdata }}
-SQL_USER=${{ velibadmin }}
-SQL_PASSWORD=${{ A6DawRUeOK536abOPDjL1awE }}
-AZURE_KEY_VAULT_URI=${{ https://kv-epsi-velibdata.vault.azure.net/ }}
-EVENTHUB_CONNECTION_STRING=${{ secrets.EVENTHUB_CONNECTION_STRING }}
-EVENTHUB_AVAILABILITY_NAME=${{ velib-availability }}
-EVENTHUB_STATION_INFO_NAME=${{ velib-station-info }}
-EVENTHUB_WEATHER_NAME=${{ velib-weather }}
-EOF
+          printf '%s\n' \
+            'SQL_SERVER=${{ secrets.SQL_SERVER }}' \
+            'SQL_DATABASE=${{ secrets.SQL_DATABASE }}' \
+            'SQL_USER=${{ secrets.SQL_USER }}' \
+            'SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}' \
+            'AZURE_KEY_VAULT_URI=${{ secrets.AZURE_KEY_VAULT_URI }}' \
+            'EVENTHUB_CONNECTION_STRING=${{ secrets.EVENTHUB_CONNECTION_STRING }}' \
+            'EVENTHUB_AVAILABILITY_NAME=${{ secrets.EVENTHUB_AVAILABILITY_NAME }}' \
+            'EVENTHUB_STATION_INFO_NAME=${{ secrets.EVENTHUB_STATION_INFO_NAME }}' \
+            'EVENTHUB_WEATHER_NAME=${{ secrets.EVENTHUB_WEATHER_NAME }}' \
+            > .env
 
       - name: Create dbt profile
         run: |
           mkdir -p ~/.dbt
-          cat > ~/.dbt/profiles.yml <<'EOF'
-dbt_velibdata:
-  target: dev
-  outputs:
-    dev:
-      type: sqlserver
-      driver: "ODBC Driver 18 for SQL Server"
-      server: "${{ secrets.SQL_SERVER }}"
-      database: "${{ secrets.SQL_DATABASE }}"
-      schema: dbo
-      user: "${{ secrets.SQL_USER }}"
-      password: "${{ secrets.SQL_PASSWORD }}"
-      encrypt: true
-      trust_cert: false
-      threads: 4
-EOF
+          printf '%s\n' \
+            'dbt_velibdata:' \
+            '  target: dev' \
+            '  outputs:' \
+            '    dev:' \
+            '      type: sqlserver' \
+            '      driver: "ODBC Driver 18 for SQL Server"' \
+            '      server: "${{ secrets.SQL_SERVER }}"' \
+            '      database: "${{ secrets.SQL_DATABASE }}"' \
+            '      schema: dbo' \
+            '      user: "${{ secrets.SQL_USER }}"' \
+            '      password: "${{ secrets.SQL_PASSWORD }}"' \
+            '      encrypt: true' \
+            '      trust_cert: false' \
+            '      threads: 4' \
+            > ~/.dbt/profiles.yml
 
       - name: Run dbt only
         if: ${{ inputs.run_mode == 'dbt_only' }}
